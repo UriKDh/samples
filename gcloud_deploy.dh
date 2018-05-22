@@ -1,0 +1,24 @@
+# project config
+export PROJECT=project_name
+echo $PROJECT
+gcloud config set project $PROJECT
+gcloud container clusters get-credentials cluster_name \
+    --zone europe-west1-b --project $PROJECT
+
+# image config
+export IMAGE=gcr.io/$PROJECT/project_name:v1
+echo $IMAGE
+
+# build container
+docker build -t project_name -f Dockerfile .
+# tag container version
+docker tag project_name $IMAGE
+# push to google container registry
+gcloud docker -- push $IMAGE
+
+# update image
+kubectl set image deployment web web=$IMAGE --record
+kubectl rollout status deployment web
+
+# check conection
+# curl --retry 10 --retry-delay 10 -v https://url -k
