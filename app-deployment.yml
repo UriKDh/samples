@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: app
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        name: app
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: default-pool
+      containers:
+      - args:
+        - bundle
+        - exec
+        - puma
+        - -b
+        - unix:///app/shared/puma.sock
+        env:
+        - name: RACK_ENV
+          value: production
+        - name: RAILS_ENV
+          value: production
+        - name: SECRET_KEY_BASE
+          value: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ # use secret for this
+        image: gcr.io/project_id/image_name:v1
+        name: app
+        ports:
+        - containerPort: 3000
+          name: http-server
+        livenessProbe:
+          httpGet:
+            path: /_health
+            port: 3000
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /_health
+            port: 3000
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        esources: {}
+      restartPolicy: Always
+status: {}
