@@ -34,7 +34,7 @@ spec:
               name: app-env-vars
               key: secret-key-base
         - name: POSTGRES_DB_HOST
-          value: 127.0.0.1:5432
+          value: 127.0.0.1
         # [START cloudsql_secrets]
         - name: POSTGRES_DB_USER
           valueFrom:
