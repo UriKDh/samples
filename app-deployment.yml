@@ -35,7 +35,10 @@ spec:
         - name: RAILS_ENV
           value: production
         - name: SECRET_KEY_BASE
-          value: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ # use secret for this
+          valueFrom:
+            secretKeyRef:
+              name: app-env-vars
+              key: secret-key-base
         image: gcr.io/project_id/image_name:v1
         name: app
         ports:
