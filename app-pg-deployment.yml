@@ -23,13 +23,7 @@ spec:
       nodeSelector:
         cloud.google.com/gke-nodepool: default-pool
       containers:
-      - args:
-        - bundle
-        - exec
-        - puma
-        - -b
-        - unix:///app/shared/puma.sock
-        env:
+      - env:
         - name: RACK_ENV
           value: production
         - name: RAILS_ENV
@@ -70,7 +64,6 @@ spec:
             port: 3000
           initialDelaySeconds: 30
           timeoutSeconds: 1
-        resources: {}
       # Change <INSTANCE_CONNECTION_NAME> here to include your GCP
       # project, the region of your Cloud SQL instance and the name
       # of your Cloud SQL instance. The format is
@@ -92,5 +85,3 @@ spec:
           secret:
             secretName: cloudsql-instance-credentials
       # [END volumes]
-      restartPolicy: Always
-status: {}
