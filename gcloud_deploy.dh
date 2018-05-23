@@ -17,8 +17,8 @@ docker tag project_name $IMAGE
 gcloud docker -- push $IMAGE
 
 # update image
-kubectl set image deployment web web=$IMAGE --record
-kubectl rollout status deployment web
+kubectl set image deployment app app=$IMAGE --record
+kubectl rollout status deployment app
 
 # check conection
 # curl --retry 10 --retry-delay 10 -v https://url -k
