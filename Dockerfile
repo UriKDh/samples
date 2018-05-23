@@ -26,9 +26,6 @@ ADD . /app
 # from the outside.
 EXPOSE 3000
 
-# Precompile assets
-# RUN bundle exec rails assets:precompile
-
 # Start puma
 CMD bundle exec puma
 VOLUME /app/public
