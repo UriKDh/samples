@@ -20,5 +20,10 @@ gcloud docker -- push $IMAGE
 kubectl set image deployment app app=$IMAGE --record
 kubectl rollout status deployment app
 
+# migrations ans assets
+export POD=`kubectl get pods | sed '1d' | awk 'BEGIN {FS=" "}; {print $1}'`
+kubectl exec $POD -- bash -c 'cd /app && RAILS_ENV=production bin/rake db:migrate'
+kubectl exec $POD -- bash -c 'cd /app && RAILS_ENV=production bin/rake assets:precompile'
+
 # check conection
 # curl --retry 10 --retry-delay 10 -v https://url -k
