@@ -20,10 +20,19 @@ gcloud docker -- push $IMAGE
 kubectl set image deployment app app=$IMAGE --record
 kubectl rollout status deployment app
 
-# migrations ans assets
-export POD=`kubectl get pods | sed '1d' | awk 'BEGIN {FS=" "}; {print $1}'`
-kubectl exec $POD -- bash -c 'cd /app && RAILS_ENV=production bin/rake db:migrate'
-kubectl exec $POD -- bash -c 'cd /app && RAILS_ENV=production bin/rake assets:precompile'
+# migrations and assets
+while read -r POD; do
+    POD_STATUS=`echo $POD | awk 'BEGIN {FS=" "}; {print $3}'`
+    if [ "$POD_STATUS"="Running" ]; then
+        POD_NAME=`echo $POD | awk 'BEGIN {FS=" "}; {print $1}'`
+        # migrations and assets
+        kubectl exec $POD_NAME -- bash -c 'cd /app && RAILS_ENV=production bin/rake db:migrate'
+        kubectl exec $POD_NAME -- bash -c 'cd /app && RAILS_ENV=production bin/rake assets:precompile'
+
+        # reload puma
+        kubectl exec $POD_NAME -- bash -c "rails restart"
+    fi
+done <<< "`kubectl get pods | sed '1d'`"
 
 # check conection
 # curl --retry 10 --retry-delay 10 -v https://url -k
