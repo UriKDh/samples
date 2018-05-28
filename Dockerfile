@@ -22,6 +22,9 @@ ENV RACK_ENV production
 # Copy the application code
 ADD . /app
 
+# Create tmp folders
+RUN mkdir -p /app/tmp/pids /app/tmp/cache /app/tmp/sockets
+
 # Expose port 3000 to the Docker host, so we can access it
 # from the outside.
 EXPOSE 3000
