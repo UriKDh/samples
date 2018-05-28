@@ -28,6 +28,12 @@ spec:
           value: production
         - name: RAILS_ENV
           value: production
+        # RAILS 5 assets
+        - name: RAILS_SERVE_STATIC_FILES
+          value: t
+        # RAILS 5 logs  
+        - name: RAILS_LOG_TO_STDOUT
+          value: t
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
